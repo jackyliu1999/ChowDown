@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, ScrollView, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Image, ScrollView, Alert, TextInput } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -19,11 +19,15 @@ export default class App extends Component {
       checkboxRecipes:false,
       checkboxNear2:false,
       checkboxRecipes2:false,
+      checkbox3:false,
       image:null,
       placeResults: [],
-      recipeResults: []
+      recipeResults: [],
+      value: '',
+      array1: []
     };
   }
+
   render() {
 
     let gallery = null; //pick image from gallery
@@ -70,12 +74,12 @@ export default class App extends Component {
               />
               <Text>{this.state.result}</Text>
               </View>
-              
-              
+
+
             }
-              
+
           </View>
-        
+
       );
     }
 
@@ -83,7 +87,7 @@ export default class App extends Component {
     if (this.state.checkbox2 == true)
     {
       keyword = (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 5, alignItems: 'center', justifyContent: 'center' }}>
         <CheckBox
           title='Find Locations near me'
           checked={this.state.checkboxNear2}
@@ -97,6 +101,31 @@ export default class App extends Component {
         </View>
       );
     }
+    let ingToRep = null;
+    if (this.state.checkbox3 == true)
+    {
+      ingToRep = (
+        <View style={{ flex: 5, alignItems: 'center', justifyContent: 'center' }}>
+        <TextInput
+          placeholder="    Ingredients"
+          style={{ width:100,height: 30, borderColor: 'gray', borderWidth: 1 }}
+          onChangeText={text => (this.setState({value:text}))}
+          value={this.state.value}
+        />
+        <Button containerStyle={{marginTop: 3}}
+          icon={
+            <Icon
+              name="book"
+              size={15}
+              color="white"
+            />
+          }
+          title="  Find Recipes"
+          onPress={() => this.setState({array1:this.state.value.split(',')})}
+        />
+        </View>
+      );
+    }
 
     return (
       <SafeAreaView style={{ flex: 1}}>
@@ -106,15 +135,21 @@ export default class App extends Component {
           <CheckBox
             title='Search Food by Image'
             checked={this.state.checkbox1}
-            onPress={() => this.setState({checkbox1: !this.state.checkbox1, checkbox2: false, image: null, placeResults: [], recipeResults: []})}
+            onPress={() => this.setState({checkbox1: !this.state.checkbox1, checkbox2: false,checkbox3: false, image: null, placeResults: [], recipeResults: []})}
           />
           <CheckBox
             title='Search Food by Name'
             checked={this.state.checkbox2}
-            onPress={() => this.setState({checkbox2: !this.state.checkbox2, checkbox1: false, image: null, placeResults: [], recipeResults: []})}
+            onPress={() => this.setState({checkbox2: !this.state.checkbox2, checkbox1: false, checkbox3: false,image: null, placeResults: [], recipeResults: []})}
+          />
+          <CheckBox
+            title='Ingredients to Recipe'
+            checked={this.state.checkbox3}
+            onPress={() => this.setState({checkbox3: !this.state.checkbox3, checkbox1: false,checkbox2: false, image: null, placeResults: [], recipeResults: []})}
           />
           {gallery}
           {keyword}
+          {ingToRep}
           {
             (this.state.placeResults.map((place, key) => {
               return (
@@ -140,7 +175,7 @@ export default class App extends Component {
           }
         </ScrollView>
       </SafeAreaView>
-      
+
     );
   }
 
